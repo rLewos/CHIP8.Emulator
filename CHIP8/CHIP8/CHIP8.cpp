@@ -1,6 +1,9 @@
 #include <iostream>
+#include "CPU.h"
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    CPU cpu;
+    cpu.loadCartridge("");
+    cpu.runCicle();
 }

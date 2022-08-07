@@ -5,6 +5,8 @@ VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CHIP8", "CHIP8\CHIP8.vcxproj", "{6E035C4A-E9FC-4081-963A-9EC01AB45015}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CHIP8.UI.SDL", "CHIP8.UI.SDL\CHIP8.UI.SDL.vcxproj", "{03C56D10-0E69-44C4-9E34-4074554F16D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{6E035C4A-E9FC-4081-963A-9EC01AB45015}.Release|x64.Build.0 = Release|x64
 		{6E035C4A-E9FC-4081-963A-9EC01AB45015}.Release|x86.ActiveCfg = Release|Win32
 		{6E035C4A-E9FC-4081-963A-9EC01AB45015}.Release|x86.Build.0 = Release|Win32
+		{03C56D10-0E69-44C4-9E34-4074554F16D1}.Debug|x64.ActiveCfg = Debug|x64
+		{03C56D10-0E69-44C4-9E34-4074554F16D1}.Debug|x64.Build.0 = Debug|x64
+		{03C56D10-0E69-44C4-9E34-4074554F16D1}.Debug|x86.ActiveCfg = Debug|Win32
+		{03C56D10-0E69-44C4-9E34-4074554F16D1}.Debug|x86.Build.0 = Debug|Win32
+		{03C56D10-0E69-44C4-9E34-4074554F16D1}.Release|x64.ActiveCfg = Release|x64
+		{03C56D10-0E69-44C4-9E34-4074554F16D1}.Release|x64.Build.0 = Release|x64
+		{03C56D10-0E69-44C4-9E34-4074554F16D1}.Release|x86.ActiveCfg = Release|Win32
+		{03C56D10-0E69-44C4-9E34-4074554F16D1}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

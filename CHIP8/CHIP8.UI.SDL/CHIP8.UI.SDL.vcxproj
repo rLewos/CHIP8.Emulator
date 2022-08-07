@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{6e035c4a-e9fc-4081-963a-9ec01ab45015}</ProjectGuid>
-    <RootNamespace>CHIP8</RootNamespace>
+    <ProjectGuid>{03c56d10-0e69-44c4-9e34-4074554f16d1}</ProjectGuid>
+    <RootNamespace>CHIP8UISDL</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -100,12 +100,10 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
-      <LanguageStandard_C>stdc11</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,14 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CHIP8.cpp" />
-    <ClCompile Include="CPU.cpp" />
-    <ClCompile Include="Memory.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="CPU.h" />
-    <ClInclude Include="Memory.h" />
-    <ClInclude Include="RegistersEnum.h" />
+    <ClCompile Include="CHIP8.UI.SDL.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
