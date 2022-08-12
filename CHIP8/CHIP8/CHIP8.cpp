@@ -4,6 +4,6 @@
 int main()
 {
     CPU cpu;
-    cpu.loadCartridge("");
+    cpu.loadCartridge("E:\\Roms\\Chip8\\IBM Logo.ch8");
     cpu.runCicle();
 }

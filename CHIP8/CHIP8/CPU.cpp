@@ -29,12 +29,38 @@ bool CPU::init()
 	return hasInitialized;
 }
 
-void CPU::runCicle()
+void CPU::reset()
+{
+	
+}
+
+void CPU::free()
 {
 
 }
 
+void CPU::runCicle()
+{
+	uint16_t opcode = mMemory.read(mPC);
+
+	switch (opcode)
+	{
+	case 0x0001:
+		// Do something.
+		break;
+
+	default:
+		break;
+	}
+}
+
 void CPU::loadCartridge(const std::string filePath)
 {
+	std::ifstream fileCartridge{ filePath, std::ios::binary };
+	std::vector<uint8_t> fileData;
 
+	for (size_t i = 0; i < fileCartridge.width(); ++i)
+	{
+		
+	}
 }

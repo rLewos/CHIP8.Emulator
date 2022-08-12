@@ -2,6 +2,9 @@
 #include <cstdint>
 #include <array>
 #include <string>
+#include <fstream>
+#include <vector>
+
 #include "Memory.h"
 
 class CPU
@@ -11,6 +14,7 @@ public:
 	~CPU();
 	bool init();
 	void reset();
+	void free();
 	void runCicle();
 	void loadCartridge(const std::string filePath);
 
