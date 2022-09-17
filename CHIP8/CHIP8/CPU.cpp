@@ -43,24 +43,74 @@ void CPU::runCicle()
 {
 	uint16_t opcode = mMemory.read(mPC);
 
-	switch (opcode)
+	switch (opcode >> 12)
 	{
-	case 0x0001:
-		// Do something.
-		break;
+		case 0x0:
+			switch (opcode & 0x00FF)
+			{
+				case 0xE0:
+					break;
 
-	default:
-		break;
+				case 0xEE:
+					mSP -= 1;
+					mPC = mStack[mSP];
+					break;
+			}
+
+			mPC += 2;
+			break;
+
+		case 0x1:
+			mPC = (opcode & 0x0FFF);
+			break;
+
+		case 0x2:
+			mStack[mSP] = mPC;
+			mSP += 1;
+
+			mPC = (opcode & 0x0FFF);
+			break;
+
+		case 0x3:
+			
+			if (mRegisters[(opcode & 0x0F00) >> 8] == (opcode & 0x00FF))
+				mPC += 4;
+			else
+				mPC += 2;
+
+			break;
+
+		case 0x4:
+
+			break;
+
+
+		default:
+			break;
 	}
 }
 
-void CPU::loadCartridge(const std::string filePath)
+void CPU::loadCartridge(std::string filePath)
 {
-	std::ifstream fileCartridge{ filePath, std::ios::binary };
-	std::vector<uint8_t> fileData;
-
-	for (size_t i = 0; i < fileCartridge.width(); ++i)
+	if (filePath.empty())
 	{
-		
+		throw std::exception("File path is empty.");
 	}
+
+	std::ifstream fileCartridge{ filePath, std::ios::binary };
+	if (!fileCartridge)
+	{
+		throw std::exception("File not found.");
+	}
+	
+	std::vector<uint8_t> fileData;
+	while (fileCartridge)
+	{
+		std::string file;
+		fileCartridge >> file;
+		std::cout << file << "\n";
+	}
+
+	mMemory.write(mPC, 0x0);
+	fileCartridge.close();
 }
