@@ -7,7 +7,12 @@ int main()
 	{
 		CPU cpu;
 		cpu.loadCartridge("E:\\Roms\\Chip8\\IBM Logo.ch8");
-		cpu.runCicle();
+		
+		while (true) {
+			cpu.runCicle();
+		}
+
+		
 	}
 	catch (const std::exception& e)
 	{

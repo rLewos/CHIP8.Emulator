@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include "Memory.h"
+#include "RegistersEnum.h"
 
 class CPU
 {
@@ -21,7 +22,7 @@ public:
 
 
 private:
-	std::array<uint8_t, 16> mRegisters;
+	std::array<uint8_t, 16> mRegisters; // GP Registers
 	uint16_t mPC; // Pointer Counter.
 	uint16_t mI;
 	
@@ -32,5 +33,7 @@ private:
 	uint8_t mTimerRegister;
 	uint8_t mSoundTimer;
 
-	Memory mMemory;
+	Memory mMemory; // RAM
+
+	uint8_t mScreen[64][32] {0};
 };

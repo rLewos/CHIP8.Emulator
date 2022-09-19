@@ -20,13 +20,21 @@ void Memory::write(uint16_t addressLocation, uint8_t data)
 	mRAM.at(addressLocation) = data;
 }
 
-void Memory::write(uint16_t initAddressLocation, uint8_t* data)
+void Memory::writeBulk(uint16_t addressLocation, const std::vector<uint8_t>& bulk)
 {
-
+	uint32_t bulkSize = bulk.size();
+	for (size_t i = 0; i < bulkSize; i++)
+	{
+		mRAM.at(addressLocation + i) = bulk.at(i);
+	};
 }
+
 
 uint16_t Memory::read(uint16_t addressLocation)
 {
-	uint16_t data = mRAM.at(addressLocation);
+	uint8_t data1 = mRAM.at(addressLocation);
+	uint8_t data2 = mRAM.at(addressLocation + 1);
+	uint16_t data = (data1 << 8) + (data2);
+
 	return data;
 }
