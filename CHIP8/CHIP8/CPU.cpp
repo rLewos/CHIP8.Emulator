@@ -142,13 +142,13 @@ void CPU::runCicle()
 			uint8_t dataY = mRegisters[(opcode & 0x00F0) >> 4];
 			uint8_t bytesToRead = (opcode & 0x000F);
 			
+			//std::vector<uint8_t> screenData;
 			for (size_t i = 0; i < bytesToRead; i++)
 			{
 				mMemory.read(mI + i);
 			}
 
-			mPC += 2;
-			
+			mPC += 2;			
 		}	
 		break;
 
