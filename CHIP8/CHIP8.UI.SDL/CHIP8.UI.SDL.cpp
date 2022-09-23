@@ -1,6 +1,6 @@
 #include <iostream>
 #include <SDL.h>
-
+#include "../CHIP8/CPU.h"
 
 
 int main(int argc, char* argv[])
@@ -37,6 +37,9 @@ int main(int argc, char* argv[])
 			int32_t numeroPixels = (surfaceScreen->pitch / 4) * 64;
 			uint32_t* intPixels = (uint32_t*)pixels;			
 
+			CPU cpu;
+			cpu.loadCartridge("E:\\Roms\\Chip8\\IBM Logo.ch8");
+
 			while (!quit)
 			{
 				while (SDL_PollEvent(&e)) {
@@ -51,22 +54,27 @@ int main(int argc, char* argv[])
 					}
 				}
 
-				SDL_LockTexture(screen, nullptr, &pixels, &pitch);
-
-				for (size_t i = 0; i < numeroPixels; i++)
+				cpu.runCicle();
+				if (cpu.getHasDrawn())
 				{
-					if (i == 10)
+					SDL_LockTexture(screen, nullptr, &pixels, &pitch);
+
+					for (size_t i = 0; i < numeroPixels; i++)
 					{
-						intPixels[i] = 0xFFFFFFFF;
+						if (i == 10)
+						{
+							intPixels[i] = 0xFFFFFFFF;
+						}
 					}
+
+					SDL_UnlockTexture(screen);
+
+					SDL_UpdateTexture(screen, nullptr, pixels, pitch);
+					SDL_SetRenderDrawColor(renderer, 0x0, 0x0, 0x0, 0x0);
+					SDL_RenderCopy(renderer, screen, nullptr, nullptr);
+					SDL_RenderPresent(renderer);
 				}
 
-				SDL_UnlockTexture(screen);
-
-				SDL_UpdateTexture(screen, nullptr, pixels, pitch);
-				SDL_SetRenderDrawColor(renderer, 0x0, 0x0, 0x0, 0x0);
-				SDL_RenderCopy(renderer, screen, nullptr, nullptr);
-				SDL_RenderPresent(renderer);
 			}
 		}
 		else 

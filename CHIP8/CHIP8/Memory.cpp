@@ -29,12 +29,16 @@ void Memory::writeBulk(uint16_t addressLocation, const std::vector<uint8_t>& bul
 	};
 }
 
-
-uint16_t Memory::read(uint16_t addressLocation)
+uint16_t Memory::fetchInstruction(uint16_t addressLocation)
 {
 	uint8_t data1 = mRAM.at(addressLocation);
 	uint8_t data2 = mRAM.at(addressLocation + 1);
 	uint16_t data = (data1 << 8) + (data2);
 
 	return data;
+}
+
+uint8_t Memory::read(uint16_t addressLocation)
+{
+	return mRAM.at(addressLocation);
 }

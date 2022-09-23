@@ -23,6 +23,8 @@ bool CPU::init()
 	mTimerRegister = 0x0;
 	mSP = 0x0;
 	mMemory.init();
+	mScreen = {0};
+	mHasDrawn = false;
 
 	hasInitialized = true;
 
@@ -41,18 +43,20 @@ void CPU::free()
 
 void CPU::runCicle()
 {
-	uint16_t opcode = mMemory.read(mPC);
+	mHasDrawn = false;
+	uint16_t opcode = mMemory.fetchInstruction(mPC);
 
 	std::cout << std::hex << opcode << "\n";
 	switch (opcode >> 12)
 	{
 		case 0x0:
+
 			std::cout << std::hex << (opcode & 0x00FF) << "\n";
 			switch (opcode & 0x00FF)
 			{
 				case 0xE0:
-					std::cout << "E0 hasn't implemented yet" << "\n";
-					break;
+				mScreen = { 0 };
+				break;
 
 				case 0xEE:
 					mSP -= 1;
@@ -142,12 +146,13 @@ void CPU::runCicle()
 			uint8_t dataY = mRegisters[(opcode & 0x00F0) >> 4];
 			uint8_t bytesToRead = (opcode & 0x000F);
 			
-			//std::vector<uint8_t> screenData;
 			for (size_t i = 0; i < bytesToRead; i++)
 			{
-				mMemory.read(mI + i);
+				uint8_t d = mMemory.read(mI + i);
+				std::cout << "Pixel: " << std::hex << (int) d << "\n";
 			}
 
+			mHasDrawn = true;
 			mPC += 2;
 		}	
 		break;
@@ -187,4 +192,9 @@ void CPU::loadCartridge(std::string filePath)
 
 	mMemory.writeBulk(mPC, fileData);
 	fileCartridge.close();
+}
+
+bool CPU::getHasDrawn()
+{
+	return mHasDrawn;
 }
