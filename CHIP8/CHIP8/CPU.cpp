@@ -148,7 +148,7 @@ void CPU::runCicle()
 				mMemory.read(mI + i);
 			}
 
-			mPC += 2;			
+			mPC += 2;
 		}	
 		break;
 

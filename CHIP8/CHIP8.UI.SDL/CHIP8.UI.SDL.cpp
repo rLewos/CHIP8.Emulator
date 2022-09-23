@@ -1,10 +1,14 @@
 #include <iostream>
 #include <SDL.h>
 
+
+
 int main(int argc, char* argv[])
 {
 	SDL_Window* window{ nullptr };
 	SDL_Renderer* renderer{ nullptr };
+	SDL_Texture* screen{ nullptr };
+	SDL_Surface* surfaceScreen{ nullptr };
 
 	try
 	{
@@ -21,7 +25,49 @@ int main(int argc, char* argv[])
 			bool quit = false;
 			SDL_Event e;
 
+			surfaceScreen = SDL_CreateRGBSurface(0, 32, 64, 32, 0x0, 0x0, 0x0, 0x0);
+			screen = SDL_CreateTexture(renderer, SDL_GetWindowPixelFormat(window), SDL_TEXTUREACCESS_STREAMING, 64, 32);
+			void* pixels = nullptr;
+			int pitch = 0;
 
+			SDL_LockTexture(screen, nullptr, &pixels, &pitch);
+			std::memcpy(pixels, surfaceScreen->pixels, surfaceScreen->pitch * surfaceScreen->h);
+			SDL_UnlockTexture(screen);
+
+			int32_t numeroPixels = (surfaceScreen->pitch / 4) * 64;
+			uint32_t* intPixels = (uint32_t*)pixels;			
+
+			while (!quit)
+			{
+				while (SDL_PollEvent(&e)) {
+					switch (e.type)
+					{
+						case SDL_QUIT:
+							quit = true;
+							break;
+						
+						default:
+							break;
+					}
+				}
+
+				SDL_LockTexture(screen, nullptr, &pixels, &pitch);
+
+				for (size_t i = 0; i < numeroPixels; i++)
+				{
+					if (i == 10)
+					{
+						intPixels[i] = 0xFFFFFFFF;
+					}
+				}
+
+				SDL_UnlockTexture(screen);
+
+				SDL_UpdateTexture(screen, nullptr, pixels, pitch);
+				SDL_SetRenderDrawColor(renderer, 0x0, 0x0, 0x0, 0x0);
+				SDL_RenderCopy(renderer, screen, nullptr, nullptr);
+				SDL_RenderPresent(renderer);
+			}
 		}
 		else 
 		{
@@ -32,6 +78,9 @@ int main(int argc, char* argv[])
 	{
 		printf("%s: %s", e.what(), SDL_GetError());
 	}
+
+	SDL_DestroyTexture(screen);
+	screen = nullptr;
 
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
