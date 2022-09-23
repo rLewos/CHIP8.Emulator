@@ -1,6 +1,8 @@
 #pragma once
 #include <cstdint>
 #include <array>
+#include <vector>
+#include <cstdint>
 
 class Memory
 {
@@ -11,6 +13,7 @@ public:
 	void reset();
 
 	void write(uint16_t addressLocation, uint8_t data);
+	void writeBulk(uint16_t addressLocation, const std::vector<uint8_t>& bulk);
 	uint16_t read(uint16_t addressLocation);
 
 private:

@@ -3,7 +3,19 @@
 
 int main()
 {
-    CPU cpu;
-    cpu.loadCartridge("");
-    cpu.runCicle();
+	try
+	{
+		CPU cpu;
+		cpu.loadCartridge("E:\\Roms\\Chip8\\IBM Logo.ch8");
+		
+		while (true) {
+			cpu.runCicle();
+		}
+
+		
+	}
+	catch (const std::exception& e)
+	{
+		printf("Error: %s", e.what());
+	}
 }
