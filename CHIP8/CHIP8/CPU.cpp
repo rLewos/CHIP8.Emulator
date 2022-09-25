@@ -23,7 +23,6 @@ bool CPU::init()
 	mTimerRegister = 0x0;
 	mSP = 0x0;
 	mMemory.init();
-	mScreen = {0};
 	mHasDrawn = false;
 
 	hasInitialized = true;
@@ -55,7 +54,13 @@ void CPU::runCicle()
 			switch (opcode & 0x00FF)
 			{
 				case 0xE0:
-				mScreen = { 0 };
+					for (size_t i = 0; i < 64; i++)
+					{
+						for (size_t j = 0; j < 32; j++)
+						{
+							mScreen[i][j] = 0x0;
+						}
+					}
 				break;
 
 				case 0xEE:
@@ -114,6 +119,30 @@ void CPU::runCicle()
 			break;
 
 		case 0x8:
+
+			switch (opcode & 0x000F)
+			{
+			case 0x0:
+				mRegisters[(opcode & 0x0F00) >> 8] = mRegisters[(opcode & 0x00F0) >> 4];
+				break;
+
+			case 0x1:
+				mRegisters[(opcode & 0x0F00) >> 8] = mRegisters[(opcode & 0x0F00) >> 8] | mRegisters[(opcode & 0x00F0) >> 4];
+				break;
+
+			case 0x2:
+				mRegisters[(opcode & 0x0F00) >> 8] = mRegisters[(opcode & 0x0F00) >> 8] & mRegisters[(opcode & 0x00F0) >> 4];
+				break;
+
+			case 0x3:
+				mRegisters[(opcode & 0x0F00) >> 8] = mRegisters[(opcode & 0x0F00) >> 8] ^ mRegisters[(opcode & 0x00F0) >> 4];
+				break;
+
+			default:
+				break;
+			}
+
+			mPC += 2;
 			break;
 
 		case 0x9:
@@ -149,7 +178,7 @@ void CPU::runCicle()
 			for (size_t i = 0; i < bytesToRead; i++)
 			{
 				uint8_t d = mMemory.read(mI + i);
-				std::cout << "Pixel: " << std::hex << (int) d << "\n";
+				mScreen[dataX][dataY + i] = d;
 			}
 
 			mHasDrawn = true;
@@ -197,4 +226,9 @@ void CPU::loadCartridge(std::string filePath)
 bool CPU::getHasDrawn()
 {
 	return mHasDrawn;
+}
+
+uint8_t* CPU::getScreen()
+{
+	return *mScreen;
 }

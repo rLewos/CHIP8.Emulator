@@ -35,10 +35,10 @@ int main(int argc, char* argv[])
 			SDL_UnlockTexture(screen);
 
 			int32_t numeroPixels = (surfaceScreen->pitch / 4) * 64;
-			uint32_t* intPixels = (uint32_t*)pixels;			
+			uint32_t* intPixels = (uint32_t*)pixels;
 
 			CPU cpu;
-			cpu.loadCartridge("E:\\Roms\\Chip8\\IBM Logo.ch8");
+			cpu.loadCartridge("E:\\Roms\\Chip8\\chip8-test-suite.ch8");
 
 			while (!quit)
 			{
@@ -59,9 +59,13 @@ int main(int argc, char* argv[])
 				{
 					SDL_LockTexture(screen, nullptr, &pixels, &pitch);
 
+					int8_t numeroPixelsX = numeroPixels / 32;
+					int8_t numeroPixelsY = numeroPixels / 64;
+					
+					uint8_t* telaCPU = cpu.getScreen();
 					for (size_t i = 0; i < numeroPixels; i++)
 					{
-						if (i == 10)
+						if (*(telaCPU + i))
 						{
 							intPixels[i] = 0xFFFFFFFF;
 						}
