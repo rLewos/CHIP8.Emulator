@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 			uint32_t* intPixels = (uint32_t*)pixels;
 
 			CPU cpu;
-			cpu.loadCartridge("E:\\Roms\\Chip8\\chip8-test-suite.ch8");
+			cpu.loadCartridge("E:\\Roms\\Chip8\\Space Invaders [David Winter].ch8");
 
 			while (!quit)
 			{
