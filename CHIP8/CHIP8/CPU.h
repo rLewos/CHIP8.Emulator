@@ -19,6 +19,8 @@ public:
 	void free();
 	void runCicle();
 	void loadCartridge(const std::string filePath);
+	bool getHasDrawn();
+	uint8_t* getScreen();
 
 
 private:
@@ -33,7 +35,7 @@ private:
 	uint8_t mTimerRegister;
 	uint8_t mSoundTimer;
 
-	Memory mMemory; // RAM
-
-	uint8_t mScreen[64][32] {0};
+	Memory mMemory; // RAM	
+	uint8_t mScreen[64][32] = { };
+	bool mHasDrawn;
 };

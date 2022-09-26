@@ -136,6 +136,11 @@
   <ItemGroup>
     <ClCompile Include="CHIP8.UI.SDL.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CHIP8\CHIP8.vcxproj">
+      <Project>{6e035c4a-e9fc-4081-963a-9ec01ab45015}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
