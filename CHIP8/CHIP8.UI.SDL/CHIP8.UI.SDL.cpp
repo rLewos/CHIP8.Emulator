@@ -65,9 +65,11 @@ int main(int argc, char* argv[])
 					uint8_t* telaCPU = cpu.getScreen();
 					for (size_t i = 0; i < numeroPixels; i++)
 					{
-						if (*(telaCPU + i))
+						uint8_t pixelByte = *(telaCPU + i);
+						for (size_t i = 0; i < 8; i++)
 						{
-							intPixels[i] = 0xFFFFFFFF;
+							if ((pixelByte & (0x80 >> i)) != 0)
+								intPixels[i] = 0xFFFFFFFF;
 						}
 					}
 

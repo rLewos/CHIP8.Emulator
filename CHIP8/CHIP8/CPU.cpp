@@ -234,8 +234,11 @@ void CPU::runCicle()
 
 		for (size_t i = 0; i < bytesToRead; i++)
 		{
-			uint8_t d = mMemory.read(mI + i);
-			mScreen[dataX][dataY + i] = d;
+			uint8_t pixelByte = mMemory.read(mI + i);
+			if (pixelByte > 0)
+			{
+				mScreen[dataX][dataY + i] = pixelByte;
+			}
 		}
 
 		mHasDrawn = true;
