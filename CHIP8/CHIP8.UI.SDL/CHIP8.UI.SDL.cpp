@@ -25,20 +25,20 @@ int main(int argc, char* argv[])
 			bool quit = false;
 			SDL_Event e;
 
-			surfaceScreen = SDL_CreateRGBSurface(0, 32, 64, 32, 0x0, 0x0, 0x0, 0x0);
+			surfaceScreen = SDL_CreateRGBSurface(0, 64, 32, 32, 0x0, 0x0, 0x0, 0x0);
 			screen = SDL_CreateTexture(renderer, SDL_GetWindowPixelFormat(window), SDL_TEXTUREACCESS_STREAMING, 64, 32);
 			void* pixels = nullptr;
 			int pitch = 0;
 
 			SDL_LockTexture(screen, nullptr, &pixels, &pitch);
-			std::memcpy(pixels, surfaceScreen->pixels, surfaceScreen->pitch * surfaceScreen->h);
+			std::memcpy(pixels, surfaceScreen->pixels, surfaceScreen->w * surfaceScreen->h);
 			SDL_UnlockTexture(screen);
 
 			int32_t numeroPixels = (surfaceScreen->pitch / 4) * 64;
 			uint32_t* intPixels = (uint32_t*)pixels;
 
 			CPU cpu;
-			cpu.loadCartridge("E:\\Roms\\Chip8\\Space Invaders [David Winter].ch8");
+			cpu.loadCartridge("E:\\Roms\\Chip8\\test_opcode.ch8");
 
 			while (!quit)
 			{
@@ -59,15 +59,15 @@ int main(int argc, char* argv[])
 				{
 					SDL_LockTexture(screen, nullptr, &pixels, &pitch);
 
-					int8_t numeroPixelsX = numeroPixels / 32;
-					int8_t numeroPixelsY = numeroPixels / 64;
-					
-					uint8_t* telaCPU = cpu.getScreen();
-					for (size_t i = 0; i < numeroPixels; i++)
+					std::array < std::array<uint8_t, 32>, 64 > tela = cpu.getScreen();
+
+					for (size_t y = 0; y < 32; y++)
 					{
-						if (*(telaCPU + i))
+						for (size_t x = 0; x < 64; x++)
 						{
-							intPixels[i] = 0xFFFFFFFF;
+							uint8_t pixelByte = tela[x][y];
+							if (pixelByte != 0x0)
+								intPixels[y * 64 + x] = 0xFFFFFFFF;
 						}
 					}
 
