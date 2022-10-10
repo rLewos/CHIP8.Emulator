@@ -308,7 +308,7 @@ void CPU::runCicle()
 		case 0x55:
 			{
 				uint8_t numRegisters = (opcode & 0x0F00) >> 8;
-				for (size_t r = 0; r < numRegisters; r++)
+				for (size_t r = 0; r <= numRegisters; r++)
 				{
 					mMemory.write(mI + r, mRegisters[r]);
 				}
@@ -320,7 +320,7 @@ void CPU::runCicle()
 		case 0x65:
 			{
 				uint8_t numRegisters = (opcode & 0x0F00) >> 8;
-				for (size_t r = 0; r < numRegisters; r++)
+				for (size_t r = 0; r <= numRegisters; r++)
 				{
 					mRegisters[r] = mMemory.read(mI + r);
 				}
