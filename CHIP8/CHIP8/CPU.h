@@ -5,6 +5,7 @@
 #include <fstream>
 #include <vector>
 #include <iostream>
+#include <random>
 
 #include "Memory.h"
 #include "RegistersEnum.h"
@@ -31,8 +32,8 @@ private:
 	std::array<uint16_t, 16> mStack;
 	uint8_t mSP; // Stack Pointer.
 
-	uint8_t mDelayRegister;
-	uint8_t mTimerRegister;
+	uint8_t mDelayTimerRegister;
+	//uint8_t mTimerRegister;
 	uint8_t mSoundTimer;
 
 	Memory mMemory; // RAM	

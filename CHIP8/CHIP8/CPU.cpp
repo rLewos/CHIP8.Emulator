@@ -18,9 +18,9 @@ bool CPU::init()
 	mStack = { 0 };
 	mPC = 0x200;
 	mI = 0x0;
-	mDelayRegister = 0x0;
+	mDelayTimerRegister = 0x0;
 	mSoundTimer = 0x0;
-	mTimerRegister = 0x0;
+	//mTimerRegister = 0x0;
 	mSP = 0x0;
 	mMemory.init();
 	mScreen = { 0 };
@@ -222,10 +222,9 @@ void CPU::runCicle()
 
 	case 0xC:
 	{
-		// TODO
 		uint8_t mask = (opcode & 0x00FF);
-		uint8_t randomNumber = 0x0; // Range: 0x00 to 0xFF.
-		mRegisters[(opcode & 0x0F00) >> 8] = (randomNumber & mask);
+		uint8_t randomNumber = rand() % 0xFF; // Range: 0x00 to 0xFF.
+		mRegisters[(opcode & 0x0F00) >> 8] = (randomNumber && mask);
 		mPC += 2;
 	}
 	break;
@@ -259,10 +258,81 @@ void CPU::runCicle()
 	break;
 
 	case 0xE:
+
+		switch (opcode & 0x00FF)
+		{
+			case 0x9E:
+
+				break;
+
+			case 0xA1:
+				break;
+
+			default:
+				break;
+		}
 		mPC += 2;
 		break;
 
 	case 0xF:
+		switch (opcode & 0x00FF)
+		{
+		case 0x07:
+			mRegisters[(opcode & 0x0F00) >> 8] = mDelayTimerRegister;
+			break;
+
+		case 0x0A:
+			// TODO
+			break;
+
+		case 0x15:
+			mDelayTimerRegister = mRegisters[(opcode & 0x0F00) >> 8];
+			break;
+
+		case 0x18:
+			mSoundTimer = mRegisters[(opcode & 0x0F00) >> 8];
+			break;
+
+		case 0x1E:
+			mI += mRegisters[(opcode & 0x0F00) >> 8];
+			break;
+
+		case 0x29:
+			mI = mRegisters[(opcode & 0x0F00) >> 8];
+			break;
+
+		case 0x33:
+			// TODO: BCD
+			break;
+
+		case 0x55:
+			{
+				uint8_t numRegisters = (opcode & 0x0F00) >> 8;
+				for (size_t r = 0; r < numRegisters; r++)
+				{
+					mMemory.write(mI + r, mRegisters[r]);
+				}
+
+				mI +=  numRegisters + 1;
+			}
+			break;
+
+		case 0x65:
+			{
+				uint8_t numRegisters = (opcode & 0x0F00) >> 8;
+				for (size_t r = 0; r < numRegisters; r++)
+				{
+					mRegisters[r] = mMemory.read(mI + r);
+				}
+
+				mI += numRegisters + 1;
+			}
+			break;
+
+		default:
+			break;
+		}
+
 		mPC += 2;
 		break;
 

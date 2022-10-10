@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
 				{
 					SDL_LockTexture(screen, nullptr, &pixels, &pitch);
 
-					std::array < std::array<uint8_t, 32>, 64 > tela = cpu.getScreen();
+					std::array <std::array<uint8_t, 32>, 64 > tela = cpu.getScreen();
 
 					for (size_t y = 0; y < 32; y++)
 					{
