@@ -1,6 +1,7 @@
 #include <iostream>
 #include <SDL.h>
 #include "../CHIP8/CPU.h"
+#include "../CHIP8/KeyEnum.h"
 
 
 int main(int argc, char* argv[])
@@ -38,7 +39,7 @@ int main(int argc, char* argv[])
 			uint32_t* intPixels = (uint32_t*)pixels;
 
 			CPU cpu;
-			cpu.loadCartridge("E:\\Roms\\Chip8\\test_opcode.ch8");
+			cpu.loadCartridge("E:\\Roms\\Chip8\\Space Invaders [David Winter].ch8");
 
 			while (!quit)
 			{
@@ -49,6 +50,63 @@ int main(int argc, char* argv[])
 							quit = true;
 							break;
 						
+						case SDL_KEYDOWN:
+							switch (e.key.keysym.sym)
+							{
+							case SDLK_z:
+								cpu.setKeyPressed(Keys::K0);
+								break;
+
+							case SDLK_x:
+								break;
+
+							case SDLK_c:
+								break;
+
+							case SDLK_v:
+								break;
+
+							case SDLK_a:
+								break;
+
+							case SDLK_s:
+								break;
+
+							case SDLK_d:
+								break;
+
+							case SDLK_f:
+								break;
+
+							case SDLK_q:
+								break;
+
+							case SDLK_w:
+								break;
+
+							case SDLK_e:
+								break;
+
+							case SDLK_r:
+								break;
+
+							case SDLK_1:
+								break;
+
+							case SDLK_2:
+								break;
+
+							case SDLK_3:
+								break;
+
+							case SDLK_4:
+								break;
+
+							default:
+								break;
+							}
+							break;
+
 						default:
 							break;
 					}

@@ -9,6 +9,7 @@
 
 #include "Memory.h"
 #include "RegistersEnum.h"
+#include "KeyEnum.h"
 
 class CPU
 {
@@ -22,6 +23,7 @@ public:
 	void loadCartridge(const std::string filePath);
 	bool getHasDrawn();
 	std::array<std::array<uint8_t,32>, 64> getScreen();
+	void setKeyPressed(Keys keyPressed);
 
 
 private:
@@ -40,4 +42,5 @@ private:
 	// uint8_t** mScreen;
 	std::array<std::array<uint8_t, 32>, 64> mScreen;
 	bool mHasDrawn;
+	std::array<std::uint8_t, 16> mKeypad;
 };

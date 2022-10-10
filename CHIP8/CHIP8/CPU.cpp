@@ -25,6 +25,7 @@ bool CPU::init()
 	mMemory.init();
 	mScreen = { 0 };
 	mHasDrawn = false;
+	mKeypad = { 0 };
 
 	hasInitialized = true;
 
@@ -62,6 +63,8 @@ void CPU::runCicle()
 					mScreen[i][j] = 0x0;
 				}
 			}
+
+			mHasDrawn = true;
 			break;
 
 		case 0xEE:
@@ -319,6 +322,7 @@ void CPU::runCicle()
 
 		case 0x65:
 			{
+			// TODO
 				uint8_t numRegisters = (opcode & 0x0F00) >> 8;
 				for (size_t r = 0; r <= numRegisters; r++)
 				{
@@ -373,4 +377,9 @@ bool CPU::getHasDrawn()
 std::array<std::array<uint8_t, 32>, 64> CPU::getScreen()
 {
 	return mScreen;
+}
+
+void CPU::setKeyPressed(Keys keyPressed)
+{
+
 }
