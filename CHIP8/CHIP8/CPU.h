@@ -24,6 +24,7 @@ public:
 	bool getHasDrawn();
 	std::array<std::array<uint8_t,32>, 64> getScreen();
 	void setKeyPressed(Keys keyPressed);
+	void setKeyReleased(Keys keyPressed);
 
 
 private:
@@ -43,4 +44,6 @@ private:
 	std::array<std::array<uint8_t, 32>, 64> mScreen;
 	bool mHasDrawn;
 	std::array<std::uint8_t, 16> mKeypad;
+
+	uint64_t mCycles;
 };

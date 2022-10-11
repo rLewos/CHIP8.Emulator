@@ -26,6 +26,7 @@ bool CPU::init()
 	mScreen = { 0 };
 	mHasDrawn = false;
 	mKeypad = { 0 };
+	mCycles = 0;
 
 	hasInitialized = true;
 
@@ -265,16 +266,28 @@ void CPU::runCicle()
 		switch (opcode & 0x00FF)
 		{
 			case 0x9E:
-
-				break;
+			{
+				uint8_t key = mRegisters[(opcode & 0x0F00) >> 8];
+				if (mKeypad[key] != 0)
+					mPC += 4;
+				else 
+					mPC += 2;
+			}
+			break;
 
 			case 0xA1:
-				break;
+			{
+				uint8_t key = mRegisters[(opcode & 0x0F00) >> 8];
+				if (mKeypad[key] == 0)
+					mPC += 4;
+				else
+					mPC += 2;
+			}
+			break;
 
 			default:
 				break;
 		}
-		mPC += 2;
 		break;
 
 	case 0xF:
@@ -344,6 +357,8 @@ void CPU::runCicle()
 		std::cout << "Instruction '" << opcode << "' not implemented." << "\n";
 		break;
 	}
+
+	++mCycles;
 }
 
 void CPU::loadCartridge(std::string filePath)
@@ -381,5 +396,10 @@ std::array<std::array<uint8_t, 32>, 64> CPU::getScreen()
 
 void CPU::setKeyPressed(Keys keyPressed)
 {
+	mKeypad[(uint8_t)keyPressed] = 0x1;
+}
 
+void CPU::setKeyReleased(Keys keyPressed)
+{
+	mKeypad[(uint8_t)keyPressed] = 0x0;
 }
