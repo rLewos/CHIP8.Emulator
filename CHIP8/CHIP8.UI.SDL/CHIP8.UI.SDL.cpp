@@ -1,6 +1,7 @@
 #include <iostream>
 #include <SDL.h>
 #include "../CHIP8/CPU.h"
+#include "../CHIP8/KeyEnum.h"
 
 
 int main(int argc, char* argv[])
@@ -38,7 +39,7 @@ int main(int argc, char* argv[])
 			uint32_t* intPixels = (uint32_t*)pixels;
 
 			CPU cpu;
-			cpu.loadCartridge("E:\\Roms\\Chip8\\test_opcode.ch8");
+			cpu.loadCartridge("E:\\Roms\\Chip8\\Keypad Test [Hap, 2006].ch8");
 
 			while (!quit)
 			{
@@ -49,6 +50,149 @@ int main(int argc, char* argv[])
 							quit = true;
 							break;
 						
+						case SDL_KEYDOWN:
+							switch (e.key.keysym.sym)
+							{
+							case SDLK_z:
+								cpu.setKeyPressed(Keys::K0);
+								break;
+
+							case SDLK_x:
+								cpu.setKeyPressed(Keys::K1);
+								break;
+
+							case SDLK_c:
+								cpu.setKeyPressed(Keys::K2);
+								break;
+
+							case SDLK_v:
+								cpu.setKeyPressed(Keys::K3);
+								break;
+
+							case SDLK_a:
+								cpu.setKeyPressed(Keys::K4);
+								break;
+
+							case SDLK_s:
+								cpu.setKeyPressed(Keys::K5);
+								break;
+
+							case SDLK_d:
+								cpu.setKeyPressed(Keys::K6);
+								break;
+
+							case SDLK_f:
+								cpu.setKeyPressed(Keys::K7);
+								break;
+
+							case SDLK_q:
+								cpu.setKeyPressed(Keys::K8);
+								break;
+
+							case SDLK_w:
+								cpu.setKeyPressed(Keys::K9);
+								break;
+
+							case SDLK_e:
+								cpu.setKeyPressed(Keys::KA);
+								break;
+
+							case SDLK_r:
+								cpu.setKeyPressed(Keys::KB);
+								break;
+
+							case SDLK_1:
+								cpu.setKeyPressed(Keys::KC);
+								break;
+
+							case SDLK_2:
+								cpu.setKeyPressed(Keys::KD);
+								break;
+
+							case SDLK_3:
+								cpu.setKeyPressed(Keys::KE);
+								break;
+
+							case SDLK_4:
+								cpu.setKeyPressed(Keys::KF);
+								break;
+
+							default:
+								break;
+							}
+							break;
+
+						case SDL_KEYUP:
+							switch (e.key.keysym.sym)
+							{
+							case SDLK_z:
+								cpu.setKeyReleased(Keys::K0);
+								break;
+
+							case SDLK_x:
+								cpu.setKeyReleased(Keys::K1);
+								break;
+
+							case SDLK_c:
+								cpu.setKeyReleased(Keys::K2);
+								break;
+
+							case SDLK_v:
+								cpu.setKeyReleased(Keys::K3);
+								break;
+
+							case SDLK_a:
+								cpu.setKeyReleased(Keys::K4);
+								break;
+
+							case SDLK_s:
+								cpu.setKeyReleased(Keys::K5);
+								break;
+
+							case SDLK_d:
+								cpu.setKeyReleased(Keys::K6);
+								break;
+
+							case SDLK_f:
+								cpu.setKeyReleased(Keys::K7);
+								break;
+
+							case SDLK_q:
+								cpu.setKeyReleased(Keys::K8);
+								break;
+
+							case SDLK_w:
+								cpu.setKeyReleased(Keys::K9);
+								break;
+
+							case SDLK_e:
+								cpu.setKeyReleased(Keys::KA);
+								break;
+
+							case SDLK_r:
+								cpu.setKeyReleased(Keys::KB);
+								break;
+
+							case SDLK_1:
+								cpu.setKeyReleased(Keys::KC);
+								break;
+
+							case SDLK_2:
+								cpu.setKeyReleased(Keys::KD);
+								break;
+
+							case SDLK_3:
+								cpu.setKeyReleased(Keys::KE);
+								break;
+
+							case SDLK_4:
+								cpu.setKeyReleased(Keys::KF);
+								break;
+
+							default:
+								break;
+							}
+							break;
 						default:
 							break;
 					}
@@ -59,7 +203,7 @@ int main(int argc, char* argv[])
 				{
 					SDL_LockTexture(screen, nullptr, &pixels, &pitch);
 
-					std::array < std::array<uint8_t, 32>, 64 > tela = cpu.getScreen();
+					std::array <std::array<uint8_t, 32>, 64 > tela = cpu.getScreen();
 
 					for (size_t y = 0; y < 32; y++)
 					{

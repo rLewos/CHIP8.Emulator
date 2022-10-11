@@ -135,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPU.h" />
+    <ClInclude Include="KeyEnum.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="RegistersEnum.h" />
   </ItemGroup>

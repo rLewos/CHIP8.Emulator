@@ -5,9 +5,11 @@
 #include <fstream>
 #include <vector>
 #include <iostream>
+#include <random>
 
 #include "Memory.h"
 #include "RegistersEnum.h"
+#include "KeyEnum.h"
 
 class CPU
 {
@@ -21,6 +23,8 @@ public:
 	void loadCartridge(const std::string filePath);
 	bool getHasDrawn();
 	std::array<std::array<uint8_t,32>, 64> getScreen();
+	void setKeyPressed(Keys keyPressed);
+	void setKeyReleased(Keys keyPressed);
 
 
 private:
@@ -31,12 +35,15 @@ private:
 	std::array<uint16_t, 16> mStack;
 	uint8_t mSP; // Stack Pointer.
 
-	uint8_t mDelayRegister;
-	uint8_t mTimerRegister;
+	uint8_t mDelayTimerRegister;
+	//uint8_t mTimerRegister;
 	uint8_t mSoundTimer;
 
 	Memory mMemory; // RAM	
 	// uint8_t** mScreen;
 	std::array<std::array<uint8_t, 32>, 64> mScreen;
 	bool mHasDrawn;
+	std::array<std::uint8_t, 16> mKeypad;
+
+	uint64_t mCycles;
 };

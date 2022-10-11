@@ -35,5 +35,8 @@
     <ClInclude Include="RegistersEnum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="KeyEnum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
