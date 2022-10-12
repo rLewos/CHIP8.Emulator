@@ -14,13 +14,13 @@ bool CPU::init()
 {
 	bool hasInitialized = false;
 
+	loadFonts();
 	mRegisters = { 0 };
 	mStack = { 0 };
 	mPC = 0x200;
 	mI = 0x0;
 	mDelayTimerRegister = 0x0;
 	mSoundTimer = 0x0;
-	//mTimerRegister = 0x0;
 	mSP = 0x0;
 	mMemory.init();
 	mScreen = { 0 };
@@ -57,14 +57,7 @@ void CPU::runCicle()
 		switch (opcode & 0x00FF)
 		{
 		case 0xE0:
-			for (size_t i = 0; i < 64; i++)
-			{
-				for (size_t j = 0; j < 32; j++)
-				{
-					mScreen[i][j] = 0x0;
-				}
-			}
-
+			mScreen = { 0 };
 			mHasDrawn = true;
 			break;
 
@@ -226,15 +219,17 @@ void CPU::runCicle()
 
 	case 0xC:
 	{
+		// TODO
 		uint8_t mask = (opcode & 0x00FF);
 		uint8_t randomNumber = rand() % 0xFF; // Range: 0x00 to 0xFF.
-		mRegisters[(opcode & 0x0F00) >> 8] = (randomNumber && mask);
+		mRegisters[(opcode & 0x0F00) >> 8] = (randomNumber & mask);
 		mPC += 2;
 	}
 	break;
 
 	case 0xD:
 	{
+		// TODO
 		uint8_t dataX = mRegisters[(opcode & 0x0F00) >> 8];
 		uint8_t dataY = mRegisters[(opcode & 0x00F0) >> 4];
 		uint8_t bytesToRead = (opcode & 0x000F);
@@ -318,8 +313,19 @@ void CPU::runCicle()
 			break;
 
 		case 0x33:
-			// TODO: BCD
-			break;
+		{
+			uint8_t value = mRegisters[(opcode & 0x0F00) >> 8];
+
+			uint8_t firstDigit = value / 100;
+			uint8_t secDigit = (value / 10) % 10;
+			uint8_t thirdDigit = (value % 100) % 10;
+
+			mMemory.write(mI, firstDigit);
+			mMemory.write(mI + 1, secDigit);
+			mMemory.write(mI + 2, thirdDigit);
+		}
+		break;
+
 
 		case 0x55:
 			{
@@ -402,4 +408,31 @@ void CPU::setKeyPressed(Keys keyPressed)
 void CPU::setKeyReleased(Keys keyPressed)
 {
 	mKeypad[(uint8_t)keyPressed] = 0x0;
+}
+
+void CPU::loadFonts()
+{
+	uint8_t fonts[5 * 16] = {
+		0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
+		0x20, 0x60, 0x20, 0x20 ,0x70, // 1
+		0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
+		0xF0, 0x10, 0xF0, 0x10, 0xF0, // 3
+		0x90, 0x90, 0xF0, 0x10, 0x10, // 4
+		0xF0, 0x80, 0xF0, 0x10, 0xF0, // 5
+		0xF0, 0x80, 0xF0, 0x90, 0xF0, // 6
+		0xF0, 0x10, 0x20, 0x40, 0x40, // 7
+		0xF0, 0x90, 0xF0, 0x90, 0xF0, // 8
+		0xF0, 0x90, 0xF0, 0x10, 0xF0, // 9
+		0xF0, 0x90, 0xF0, 0x90, 0x90, // A
+		0xE0, 0x90, 0xE0, 0x90, 0xE0, // B
+		0xF0, 0x80, 0x80, 0x80, 0xF0, // C
+		0xE0, 0x90, 0x90, 0x90, 0xE0, // D
+		0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
+		0xF0, 0x80, 0xF0, 0x80, 0x80  // F
+	};
+
+	mPC = 0x50;
+	int8_t fontSize = sizeof(fonts);
+	for (size_t i = 0; i < fontSize; i++)
+		mMemory.write(mPC + i , fonts[i]);
 }
