@@ -219,7 +219,6 @@ void CPU::runCicle()
 
 	case 0xC:
 	{
-		// TODO
 		uint8_t mask = (opcode & 0x00FF);
 		uint8_t randomNumber = rand() % 0xFF; // Range: 0x00 to 0xFF.
 		mRegisters[(opcode & 0x0F00) >> 8] = (randomNumber & mask);
@@ -293,8 +292,25 @@ void CPU::runCicle()
 			break;
 
 		case 0x0A:
-			// TODO
-			break;
+		{
+			uint8_t target = mRegisters[(opcode & 0x0F00) >> 8];
+			uint8_t buttonSize = mKeypad.size();
+
+			bool hasButtonPressed = false;
+			for (size_t i = 0; i < buttonSize; i++)
+			{
+				if (mKeypad[i] == 0x1)
+				{
+					mRegisters[target] = i;
+					hasButtonPressed = true;
+					break;
+				}
+			}
+
+			if (!hasButtonPressed)
+				return;
+		}
+		break;
 
 		case 0x15:
 			mDelayTimerRegister = mRegisters[(opcode & 0x0F00) >> 8];
@@ -326,14 +342,12 @@ void CPU::runCicle()
 		}
 		break;
 
-
 		case 0x55:
 			{
 				uint8_t numRegisters = (opcode & 0x0F00) >> 8;
+				
 				for (size_t r = 0; r <= numRegisters; r++)
-				{
 					mMemory.write(mI + r, mRegisters[r]);
-				}
 
 				mI +=  numRegisters + 1;
 			}
@@ -343,10 +357,9 @@ void CPU::runCicle()
 			{
 			// TODO
 				uint8_t numRegisters = (opcode & 0x0F00) >> 8;
+				
 				for (size_t r = 0; r <= numRegisters; r++)
-				{
 					mRegisters[r] = mMemory.read(mI + r);
-				}
 
 				mI += numRegisters + 1;
 			}
