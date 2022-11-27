@@ -131,11 +131,11 @@ void CPU::runCicle()
 			break;
 
 		case 0x1:
-			mRegisters[(opcode & 0x0F00) >> 8] |= mRegisters[(opcode & 0x00F0) >> 4];
+			mRegisters[(opcode & 0x0F00) >> 8] = (uint8_t) (mRegisters[(opcode & 0x0F00) >> 8] | mRegisters[(opcode & 0x00F0) >> 4]);
 			break;
 
 		case 0x2:
-			mRegisters[(opcode & 0x0F00) >> 8] &= mRegisters[(opcode & 0x00F0) >> 4];
+			mRegisters[(opcode & 0x0F00) >> 8] = (uint8_t) (mRegisters[(opcode & 0x0F00) >> 8] & mRegisters[(opcode & 0x00F0) >> 4]);
 			break;
 
 		case 0x3:
@@ -176,8 +176,6 @@ void CPU::runCicle()
 			mRegisters[(opcode & 0x0F00) >> 8] = (mRegisters[(opcode & 0x00F0) >> 4]) >> 1;
 
 			uint8_t flag = (dataYPriorShift & 0b00000001);
-
-			//uint8_t flag = (dataY & 0b00000001);
 			mRegisters[(int)Registers::VF] = flag;
 		}
 		break;
@@ -249,6 +247,11 @@ void CPU::runCicle()
 			
 			for (size_t x = 0; x < 8; x++)
 			{
+				if (dataX > 53)
+				{
+					std::cout << "\n";
+				}
+
 				uint8_t screenCurrentPixel = mScreen[dataX + x][dataY + y];
 				uint8_t xoredPx = screenCurrentPixel ^ 0x1;
 				
