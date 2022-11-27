@@ -49,6 +49,12 @@ void CPU::runCicle()
 	uint16_t opcode = mMemory.fetchInstruction(mPC);
 
 	std::cout << std::hex << opcode << "\n";
+	if (mDelayTimerRegister > 0)
+		--mDelayTimerRegister;
+
+	if (mSoundTimer > 0)
+		--mSoundTimer;	
+
 	switch (opcode >> 12)
 	{
 	case 0x0:
@@ -166,11 +172,13 @@ void CPU::runCicle()
 
 		case 0x6:
 		{
-			mRegisters[(opcode & 0x0F00) >> 8] = mRegisters[(opcode & 0x00F0) >> 4] >> 1;
+			uint8_t dataYPriorShift = mRegisters[(opcode & 0x00F0) >> 4];
+			mRegisters[(opcode & 0x0F00) >> 8] = (mRegisters[(opcode & 0x00F0) >> 4]) >> 1;
 
-			uint8_t dataY = mRegisters[(opcode & 0x00F0) >> 4];
-			uint8_t mask = (dataY & 0b00000001);
-			mRegisters[(int)Registers::VF] = (mRegisters[(opcode & 0x00F0) >> 4] & 0b00000001);
+			uint8_t flag = (dataYPriorShift & 0b00000001);
+
+			//uint8_t flag = (dataY & 0b00000001);
+			mRegisters[(int)Registers::VF] = flag;
 		}
 		break;
 
@@ -190,9 +198,11 @@ void CPU::runCicle()
 
 		case 0xE:
 		{
-			mRegisters[(opcode & 0x0F00) >> 8] = mRegisters[(opcode & 0x00F0) >> 4] << 1;
-			uint8_t mask = ((mRegisters[(opcode & 0x00F0) >> 4] & 0b10000000) >> 8);
-			mRegisters[(int)Registers::VF] = mask;
+			uint8_t dataYPriorShift = mRegisters[(opcode & 0x00F0) >> 4];
+			mRegisters[(opcode & 0x0F00) >> 8] = (mRegisters[(opcode & 0x00F0) >> 4]) << 1;
+
+			uint8_t flag = ((dataYPriorShift & 0b10000000) >> 8);
+			mRegisters[(int)Registers::VF] = flag;
 		}
 		break;
 		}
@@ -247,6 +257,15 @@ void CPU::runCicle()
 					// Check each bit from byte-sprite.
 					mScreen[dataX + x][dataY + y] = xoredPx;
 				}
+
+				if ((screenCurrentPixel == 0x1) && (xoredPx == 0x0))
+				{
+					mRegisters[(int32_t)Registers::VF] = 0x1;
+				}
+				else 
+				{
+					mRegisters[(int32_t)Registers::VF] = 0x0;
+				}
 			}
 		}
 
@@ -293,7 +312,7 @@ void CPU::runCicle()
 
 		case 0x0A:
 		{
-			uint8_t target = mRegisters[(opcode & 0x0F00) >> 8];
+			uint8_t target = (opcode & 0x0F00) >> 8;
 			uint8_t buttonSize = mKeypad.size();
 
 			bool hasButtonPressed = false;
@@ -361,7 +380,7 @@ void CPU::runCicle()
 				for (size_t r = 0; r <= numRegisters; r++)
 					mRegisters[r] = mMemory.read(mI + r);
 
-				mI += numRegisters + 1;
+				mI = mI + numRegisters + 1;
 			}
 			break;
 

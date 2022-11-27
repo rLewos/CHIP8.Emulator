@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 
 	try
 	{
-		if (SDL_Init(SDL_INIT_VIDEO) == 0)
+		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == 0)
 		{
 			window = SDL_CreateWindow("CHIP8 Emulator", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN);
 			if (window == nullptr)
@@ -40,6 +40,7 @@ int main(int argc, char* argv[])
 
 			CPU cpu;
 			cpu.loadCartridge("E:\\Roms\\Chip8\\chip8-test-suite.ch8");
+			//cpu.loadCartridge("E:\\Roms\\Chip8\\Space Invaders [David Winter].ch8");
 
 			while (!quit)
 			{
