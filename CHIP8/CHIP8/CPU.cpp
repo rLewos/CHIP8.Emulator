@@ -27,6 +27,7 @@ bool CPU::init()
 	mHasDrawn = false;
 	mKeypad = { 0 };
 	mCycles = 0;
+	mClock = 1;
 
 	hasInitialized = true;
 
@@ -48,7 +49,8 @@ void CPU::runCicle()
 	mHasDrawn = false;
 	uint16_t opcode = mMemory.fetchInstruction(mPC);
 
-	std::cout << std::hex << opcode << "\n";
+	std::cout  << mCycles << ": " << std::hex << opcode << "\n";
+
 	if (mDelayTimerRegister > 0)
 		--mDelayTimerRegister;
 
@@ -243,32 +245,41 @@ void CPU::runCicle()
 
 		for (size_t y = 0; y < bytesToRead; y++)
 		{
+			// The interpreter reads n bytes from memory, starting at the address stored in I. 
 			uint8_t pixelByte = mMemory.read(mI + y);
 			
 			for (size_t x = 0; x < 8; x++)
 			{
-				if (dataX > 53)
+				if (mCycles > 7 && x > 5)
+					std::cout << "\n";
+
+				// Last frame pixel.
+				uint8_t screenCurrentPixel = 0;
+				if (dataX + x > 63)
 				{
 					std::cout << "\n";
+					uint8_t wrappedPixel = (dataX + x) - 64;
+					screenCurrentPixel = mScreen[wrappedPixel][dataY + y];
+				}
+				else {
+					screenCurrentPixel = mScreen[dataX + x][dataY + y];
 				}
 
-				uint8_t screenCurrentPixel = mScreen[dataX + x][dataY + y];
+				
+				// Sprites are XORed onto the existing screen. 
 				uint8_t xoredPx = screenCurrentPixel ^ 0x1;
 				
 				if ((pixelByte & (0x80 >> x)) != 0)
 				{
 					// Check each bit from byte-sprite.
+					// These bytes are then displayed as sprites on screen at coordinates (Vx, Vy). 
 					mScreen[dataX + x][dataY + y] = xoredPx;
 				}
 
 				if ((screenCurrentPixel == 0x1) && (xoredPx == 0x0))
-				{
 					mRegisters[(int32_t)Registers::VF] = 0x1;
-				}
 				else 
-				{
 					mRegisters[(int32_t)Registers::VF] = 0x0;
-				}
 			}
 		}
 

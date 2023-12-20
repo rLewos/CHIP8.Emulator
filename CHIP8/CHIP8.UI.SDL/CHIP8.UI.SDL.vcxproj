@@ -142,11 +142,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CHIP8.UI.SDL.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CHIP8\CHIP8.vcxproj">
       <Project>{6e035c4a-e9fc-4081-963a-9ec01ab45015}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

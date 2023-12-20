@@ -43,6 +43,7 @@ private:
 	std::array<std::array<uint8_t, 32>, 64> mScreen;
 	bool mHasDrawn;
 	std::array<std::uint8_t, 16> mKeypad;
+	double mClock;
 
 	uint64_t mCycles;
 };
