@@ -14,19 +14,20 @@ bool CPU::init()
 {
 	bool hasInitialized = false;
 
+	loadFonts();
 	mRegisters = { 0 };
 	mStack = { 0 };
 	mPC = 0x200;
 	mI = 0x0;
 	mDelayTimerRegister = 0x0;
 	mSoundTimer = 0x0;
-	//mTimerRegister = 0x0;
 	mSP = 0x0;
 	mMemory.init();
 	mScreen = { 0 };
 	mHasDrawn = false;
 	mKeypad = { 0 };
 	mCycles = 0;
+	mClock = 1;
 
 	hasInitialized = true;
 
@@ -48,7 +49,14 @@ void CPU::runCicle()
 	mHasDrawn = false;
 	uint16_t opcode = mMemory.fetchInstruction(mPC);
 
-	std::cout << std::hex << opcode << "\n";
+	std::cout  << mCycles << ": " << std::hex << opcode << "\n";
+
+	if (mDelayTimerRegister > 0)
+		--mDelayTimerRegister;
+
+	if (mSoundTimer > 0)
+		--mSoundTimer;	
+
 	switch (opcode >> 12)
 	{
 	case 0x0:
@@ -57,14 +65,7 @@ void CPU::runCicle()
 		switch (opcode & 0x00FF)
 		{
 		case 0xE0:
-			for (size_t i = 0; i < 64; i++)
-			{
-				for (size_t j = 0; j < 32; j++)
-				{
-					mScreen[i][j] = 0x0;
-				}
-			}
-
+			mScreen = { 0 };
 			mHasDrawn = true;
 			break;
 
@@ -132,11 +133,11 @@ void CPU::runCicle()
 			break;
 
 		case 0x1:
-			mRegisters[(opcode & 0x0F00) >> 8] |= mRegisters[(opcode & 0x00F0) >> 4];
+			mRegisters[(opcode & 0x0F00) >> 8] = (uint8_t) (mRegisters[(opcode & 0x0F00) >> 8] | mRegisters[(opcode & 0x00F0) >> 4]);
 			break;
 
 		case 0x2:
-			mRegisters[(opcode & 0x0F00) >> 8] &= mRegisters[(opcode & 0x00F0) >> 4];
+			mRegisters[(opcode & 0x0F00) >> 8] = (uint8_t) (mRegisters[(opcode & 0x0F00) >> 8] & mRegisters[(opcode & 0x00F0) >> 4]);
 			break;
 
 		case 0x3:
@@ -173,11 +174,11 @@ void CPU::runCicle()
 
 		case 0x6:
 		{
-			mRegisters[(opcode & 0x0F00) >> 8] = mRegisters[(opcode & 0x00F0) >> 4] >> 1;
+			uint8_t dataYPriorShift = mRegisters[(opcode & 0x00F0) >> 4];
+			mRegisters[(opcode & 0x0F00) >> 8] = (mRegisters[(opcode & 0x00F0) >> 4]) >> 1;
 
-			uint8_t dataY = mRegisters[(opcode & 0x00F0) >> 4];
-			uint8_t mask = (dataY & 0b00000001);
-			mRegisters[(int)Registers::VF] = (mRegisters[(opcode & 0x00F0) >> 4] & 0b00000001);
+			uint8_t flag = (dataYPriorShift & 0b00000001);
+			mRegisters[(int)Registers::VF] = flag;
 		}
 		break;
 
@@ -197,9 +198,11 @@ void CPU::runCicle()
 
 		case 0xE:
 		{
-			mRegisters[(opcode & 0x0F00) >> 8] = mRegisters[(opcode & 0x00F0) >> 4] << 1;
-			uint8_t mask = ((mRegisters[(opcode & 0x00F0) >> 4] & 0b10000000) >> 8);
-			mRegisters[(int)Registers::VF] = mask;
+			uint8_t dataYPriorShift = mRegisters[(opcode & 0x00F0) >> 4];
+			mRegisters[(opcode & 0x0F00) >> 8] = (mRegisters[(opcode & 0x00F0) >> 4]) << 1;
+
+			uint8_t flag = ((dataYPriorShift & 0b10000000) >> 8);
+			mRegisters[(int)Registers::VF] = flag;
 		}
 		break;
 		}
@@ -228,31 +231,59 @@ void CPU::runCicle()
 	{
 		uint8_t mask = (opcode & 0x00FF);
 		uint8_t randomNumber = rand() % 0xFF; // Range: 0x00 to 0xFF.
-		mRegisters[(opcode & 0x0F00) >> 8] = (randomNumber && mask);
+		mRegisters[(opcode & 0x0F00) >> 8] = (randomNumber & mask);
 		mPC += 2;
 	}
 	break;
 
 	case 0xD:
 	{
+		// TODO
 		uint8_t dataX = mRegisters[(opcode & 0x0F00) >> 8];
 		uint8_t dataY = mRegisters[(opcode & 0x00F0) >> 4];
 		uint8_t bytesToRead = (opcode & 0x000F);
 
 		for (size_t y = 0; y < bytesToRead; y++)
 		{
+			// The interpreter reads n bytes from memory, starting at the address stored in I. 
 			uint8_t pixelByte = mMemory.read(mI + y);
 			
 			for (size_t x = 0; x < 8; x++)
 			{
-				uint8_t screenCurrentPixel = mScreen[dataX + x][dataY + y];
+				if (mCycles > 7 && x > 5)
+					std::cout << "\n";
+
+				// Last frame pixel.
+				uint8_t screenCurrentPixel = 0;
+				if (dataX + x > 63)
+				{
+					std::cout << "\n";
+					uint8_t wrappedPixel = (dataX + x) - 64;
+					screenCurrentPixel = mScreen[wrappedPixel][dataY + y];
+				}
+				else if (dataY + y > 31) {
+					uint8_t wrappedPixel = (dataY + y) - 32;
+					screenCurrentPixel = mScreen[dataX + x][wrappedPixel];
+				}
+				else {
+					screenCurrentPixel = mScreen[dataX + x][dataY + y];
+				}
+
+				
+				// Sprites are XORed onto the existing screen. 
 				uint8_t xoredPx = screenCurrentPixel ^ 0x1;
 				
 				if ((pixelByte & (0x80 >> x)) != 0)
 				{
 					// Check each bit from byte-sprite.
+					// These bytes are then displayed as sprites on screen at coordinates (Vx, Vy). 
 					mScreen[dataX + x][dataY + y] = xoredPx;
 				}
+
+				if ((screenCurrentPixel == 0x1) && (xoredPx == 0x0))
+					mRegisters[(int32_t)Registers::VF] = 0x1;
+				else 
+					mRegisters[(int32_t)Registers::VF] = 0x0;
 			}
 		}
 
@@ -298,8 +329,25 @@ void CPU::runCicle()
 			break;
 
 		case 0x0A:
-			// TODO
-			break;
+		{
+			uint8_t target = (opcode & 0x0F00) >> 8;
+			uint8_t buttonSize = mKeypad.size();
+
+			bool hasButtonPressed = false;
+			for (size_t i = 0; i < buttonSize; i++)
+			{
+				if (mKeypad[i] == 0x1)
+				{
+					mRegisters[target] = i;
+					hasButtonPressed = true;
+					break;
+				}
+			}
+
+			if (!hasButtonPressed)
+				return;
+		}
+		break;
 
 		case 0x15:
 			mDelayTimerRegister = mRegisters[(opcode & 0x0F00) >> 8];
@@ -318,16 +366,25 @@ void CPU::runCicle()
 			break;
 
 		case 0x33:
-			// TODO: BCD
-			break;
+		{
+			uint8_t value = mRegisters[(opcode & 0x0F00) >> 8];
+
+			uint8_t firstDigit = value / 100;
+			uint8_t secDigit = (value / 10) % 10;
+			uint8_t thirdDigit = (value % 100) % 10;
+
+			mMemory.write(mI, firstDigit);
+			mMemory.write(mI + 1, secDigit);
+			mMemory.write(mI + 2, thirdDigit);
+		}
+		break;
 
 		case 0x55:
 			{
 				uint8_t numRegisters = (opcode & 0x0F00) >> 8;
+				
 				for (size_t r = 0; r <= numRegisters; r++)
-				{
 					mMemory.write(mI + r, mRegisters[r]);
-				}
 
 				mI +=  numRegisters + 1;
 			}
@@ -337,12 +394,11 @@ void CPU::runCicle()
 			{
 			// TODO
 				uint8_t numRegisters = (opcode & 0x0F00) >> 8;
+				
 				for (size_t r = 0; r <= numRegisters; r++)
-				{
 					mRegisters[r] = mMemory.read(mI + r);
-				}
 
-				mI += numRegisters + 1;
+				mI = mI + numRegisters + 1;
 			}
 			break;
 
@@ -402,4 +458,31 @@ void CPU::setKeyPressed(Keys keyPressed)
 void CPU::setKeyReleased(Keys keyPressed)
 {
 	mKeypad[(uint8_t)keyPressed] = 0x0;
+}
+
+void CPU::loadFonts()
+{
+	uint8_t fonts[5 * 16] = {
+		0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
+		0x20, 0x60, 0x20, 0x20 ,0x70, // 1
+		0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
+		0xF0, 0x10, 0xF0, 0x10, 0xF0, // 3
+		0x90, 0x90, 0xF0, 0x10, 0x10, // 4
+		0xF0, 0x80, 0xF0, 0x10, 0xF0, // 5
+		0xF0, 0x80, 0xF0, 0x90, 0xF0, // 6
+		0xF0, 0x10, 0x20, 0x40, 0x40, // 7
+		0xF0, 0x90, 0xF0, 0x90, 0xF0, // 8
+		0xF0, 0x90, 0xF0, 0x10, 0xF0, // 9
+		0xF0, 0x90, 0xF0, 0x90, 0x90, // A
+		0xE0, 0x90, 0xE0, 0x90, 0xE0, // B
+		0xF0, 0x80, 0x80, 0x80, 0xF0, // C
+		0xE0, 0x90, 0x90, 0x90, 0xE0, // D
+		0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
+		0xF0, 0x80, 0xF0, 0x80, 0x80  // F
+	};
+
+	mPC = 0x50;
+	int8_t fontSize = sizeof(fonts);
+	for (size_t i = 0; i < fontSize; i++)
+		mMemory.write(mPC + i , fonts[i]);
 }

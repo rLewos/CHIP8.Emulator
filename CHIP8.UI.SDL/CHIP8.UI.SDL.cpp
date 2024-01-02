@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include "../CHIP8/CPU.h"
 #include "../CHIP8/KeyEnum.h"
+#include "Window.h"
 
 
 int main(int argc, char* argv[])
@@ -13,7 +14,7 @@ int main(int argc, char* argv[])
 
 	try
 	{
-		if (SDL_Init(SDL_INIT_VIDEO) == 0)
+		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == 0)
 		{
 			window = SDL_CreateWindow("CHIP8 Emulator", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN);
 			if (window == nullptr)
@@ -22,7 +23,7 @@ int main(int argc, char* argv[])
 			renderer = SDL_CreateRenderer(window, 0, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 			if (renderer == nullptr)
 				throw std::exception("Can't create renderer");
-
+			
 			bool quit = false;
 			SDL_Event e;
 
@@ -39,7 +40,10 @@ int main(int argc, char* argv[])
 			uint32_t* intPixels = (uint32_t*)pixels;
 
 			CPU cpu;
-			cpu.loadCartridge("E:\\Roms\\Chip8\\Keypad Test [Hap, 2006].ch8");
+
+			std::vector<std::string> suitTestRomNameList{ "1-chip8-logo", "2-ibm-logo", "3-corax+", "4-flags", "5-quirks", "6-keypad", "7-beep", "8-scrolling"  };
+			cpu.loadCartridge("E:\\Roms\\Chip8\\SuitTest\\" + suitTestRomNameList.at(3) + ".ch8");
+			//cpu.loadCartridge("E:\\Roms\\Chip8\\Tetris [Fran Dachille, 1991].ch8");
 
 			while (!quit)
 			{
@@ -54,67 +58,67 @@ int main(int argc, char* argv[])
 							switch (e.key.keysym.sym)
 							{
 							case SDLK_z:
-								cpu.setKeyPressed(Keys::K0);
-								break;
-
-							case SDLK_x:
-								cpu.setKeyPressed(Keys::K1);
-								break;
-
-							case SDLK_c:
-								cpu.setKeyPressed(Keys::K2);
-								break;
-
-							case SDLK_v:
-								cpu.setKeyPressed(Keys::K3);
-								break;
-
-							case SDLK_a:
-								cpu.setKeyPressed(Keys::K4);
-								break;
-
-							case SDLK_s:
-								cpu.setKeyPressed(Keys::K5);
-								break;
-
-							case SDLK_d:
-								cpu.setKeyPressed(Keys::K6);
-								break;
-
-							case SDLK_f:
-								cpu.setKeyPressed(Keys::K7);
-								break;
-
-							case SDLK_q:
-								cpu.setKeyPressed(Keys::K8);
-								break;
-
-							case SDLK_w:
-								cpu.setKeyPressed(Keys::K9);
-								break;
-
-							case SDLK_e:
 								cpu.setKeyPressed(Keys::KA);
 								break;
 
-							case SDLK_r:
+							case SDLK_x:
+								cpu.setKeyPressed(Keys::K0);
+								break;
+
+							case SDLK_c:
 								cpu.setKeyPressed(Keys::KB);
 								break;
 
-							case SDLK_1:
-								cpu.setKeyPressed(Keys::KC);
+							case SDLK_v:
+								cpu.setKeyPressed(Keys::KF);
 								break;
 
-							case SDLK_2:
-								cpu.setKeyPressed(Keys::KD);
+							case SDLK_a:
+								cpu.setKeyPressed(Keys::K7);
 								break;
 
-							case SDLK_3:
+							case SDLK_s:
+								cpu.setKeyPressed(Keys::K8);
+								break;
+
+							case SDLK_d:
+								cpu.setKeyPressed(Keys::K9);
+								break;
+
+							case SDLK_f:
 								cpu.setKeyPressed(Keys::KE);
 								break;
 
+							case SDLK_q:
+								cpu.setKeyPressed(Keys::K4);
+								break;
+
+							case SDLK_w:
+								cpu.setKeyPressed(Keys::K5);
+								break;
+
+							case SDLK_e:
+								cpu.setKeyPressed(Keys::K6);
+								break;
+
+							case SDLK_r:
+								cpu.setKeyPressed(Keys::KD);
+								break;
+
+							case SDLK_1:
+								cpu.setKeyPressed(Keys::K1);
+								break;
+
+							case SDLK_2:
+								cpu.setKeyPressed(Keys::K2);
+								break;
+
+							case SDLK_3:
+								cpu.setKeyPressed(Keys::K3);
+								break;
+
 							case SDLK_4:
-								cpu.setKeyPressed(Keys::KF);
+								cpu.setKeyPressed(Keys::KC);
 								break;
 
 							default:
@@ -126,73 +130,74 @@ int main(int argc, char* argv[])
 							switch (e.key.keysym.sym)
 							{
 							case SDLK_z:
-								cpu.setKeyReleased(Keys::K0);
-								break;
-
-							case SDLK_x:
-								cpu.setKeyReleased(Keys::K1);
-								break;
-
-							case SDLK_c:
-								cpu.setKeyReleased(Keys::K2);
-								break;
-
-							case SDLK_v:
-								cpu.setKeyReleased(Keys::K3);
-								break;
-
-							case SDLK_a:
-								cpu.setKeyReleased(Keys::K4);
-								break;
-
-							case SDLK_s:
-								cpu.setKeyReleased(Keys::K5);
-								break;
-
-							case SDLK_d:
-								cpu.setKeyReleased(Keys::K6);
-								break;
-
-							case SDLK_f:
-								cpu.setKeyReleased(Keys::K7);
-								break;
-
-							case SDLK_q:
-								cpu.setKeyReleased(Keys::K8);
-								break;
-
-							case SDLK_w:
-								cpu.setKeyReleased(Keys::K9);
-								break;
-
-							case SDLK_e:
 								cpu.setKeyReleased(Keys::KA);
 								break;
 
-							case SDLK_r:
+							case SDLK_x:
+								cpu.setKeyReleased(Keys::K0);
+								break;
+
+							case SDLK_c:
 								cpu.setKeyReleased(Keys::KB);
 								break;
 
-							case SDLK_1:
-								cpu.setKeyReleased(Keys::KC);
+							case SDLK_v:
+								cpu.setKeyReleased(Keys::KF);
 								break;
 
-							case SDLK_2:
-								cpu.setKeyReleased(Keys::KD);
+							case SDLK_a:
+								cpu.setKeyReleased(Keys::K7);
 								break;
 
-							case SDLK_3:
+							case SDLK_s:
+								cpu.setKeyReleased(Keys::K8);
+								break;
+
+							case SDLK_d:
+								cpu.setKeyReleased(Keys::K9);
+								break;
+
+							case SDLK_f:
 								cpu.setKeyReleased(Keys::KE);
 								break;
 
+							case SDLK_q:
+								cpu.setKeyReleased(Keys::K4);
+								break;
+
+							case SDLK_w:
+								cpu.setKeyReleased(Keys::K5);
+								break;
+
+							case SDLK_e:
+								cpu.setKeyReleased(Keys::K6);
+								break;
+
+							case SDLK_r:
+								cpu.setKeyReleased(Keys::KD);
+								break;
+
+							case SDLK_1:
+								cpu.setKeyReleased(Keys::K1);
+								break;
+
+							case SDLK_2:
+								cpu.setKeyReleased(Keys::K2);
+								break;
+
+							case SDLK_3:
+								cpu.setKeyReleased(Keys::K3);
+								break;
+
 							case SDLK_4:
-								cpu.setKeyReleased(Keys::KF);
+								cpu.setKeyReleased(Keys::KC);
 								break;
 
 							default:
 								break;
 							}
 							break;
+						
 						default:
 							break;
 					}
@@ -212,6 +217,8 @@ int main(int argc, char* argv[])
 							uint8_t pixelByte = tela[x][y];
 							if (pixelByte != 0x0)
 								intPixels[y * 64 + x] = 0xFFFFFFFF;
+							else
+								intPixels[y * 64 + x] = 0x0;
 						}
 					}
 

@@ -25,6 +25,7 @@ public:
 	std::array<std::array<uint8_t,32>, 64> getScreen();
 	void setKeyPressed(Keys keyPressed);
 	void setKeyReleased(Keys keyPressed);
+	void loadFonts();
 
 
 private:
@@ -36,14 +37,13 @@ private:
 	uint8_t mSP; // Stack Pointer.
 
 	uint8_t mDelayTimerRegister;
-	//uint8_t mTimerRegister;
 	uint8_t mSoundTimer;
 
 	Memory mMemory; // RAM	
-	// uint8_t** mScreen;
 	std::array<std::array<uint8_t, 32>, 64> mScreen;
 	bool mHasDrawn;
 	std::array<std::uint8_t, 16> mKeypad;
+	double mClock;
 
 	uint64_t mCycles;
 };
