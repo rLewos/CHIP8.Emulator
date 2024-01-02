@@ -7,7 +7,6 @@
 
 int main(int argc, char* argv[])
 {
-	
 	SDL_Window* window{ nullptr };
 	SDL_Renderer* renderer{ nullptr };
 	SDL_Texture* screen{ nullptr };
@@ -24,7 +23,7 @@ int main(int argc, char* argv[])
 			renderer = SDL_CreateRenderer(window, 0, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 			if (renderer == nullptr)
 				throw std::exception("Can't create renderer");
-
+			
 			bool quit = false;
 			SDL_Event e;
 
@@ -41,8 +40,10 @@ int main(int argc, char* argv[])
 			uint32_t* intPixels = (uint32_t*)pixels;
 
 			CPU cpu;
-			cpu.loadCartridge("E:\\Roms\\Chip8\\SuitTest\\3-corax+.ch8");
-			//cpu.loadCartridge("E:\\Roms\\Chip8\\Space Invaders [David Winter].ch8");
+
+			std::vector<std::string> suitTestRomNameList{ "1-chip8-logo", "2-ibm-logo", "3-corax+", "4-flags", "5-quirks", "6-keypad", "7-beep", "8-scrolling"  };
+			cpu.loadCartridge("E:\\Roms\\Chip8\\SuitTest\\" + suitTestRomNameList.at(3) + ".ch8");
+			//cpu.loadCartridge("E:\\Roms\\Chip8\\Tetris [Fran Dachille, 1991].ch8");
 
 			while (!quit)
 			{

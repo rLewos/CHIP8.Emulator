@@ -261,6 +261,10 @@ void CPU::runCicle()
 					uint8_t wrappedPixel = (dataX + x) - 64;
 					screenCurrentPixel = mScreen[wrappedPixel][dataY + y];
 				}
+				else if (dataY + y > 31) {
+					uint8_t wrappedPixel = (dataY + y) - 32;
+					screenCurrentPixel = mScreen[dataX + x][wrappedPixel];
+				}
 				else {
 					screenCurrentPixel = mScreen[dataX + x][dataY + y];
 				}
