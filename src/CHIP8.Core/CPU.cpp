@@ -421,13 +421,13 @@ void CPU::loadCartridge(std::string filePath)
 {
 	if (filePath.empty())
 	{
-		throw std::exception("File path is empty.");
+		throw std::runtime_error("File path is empty.");
 	}
 
 	std::ifstream fileCartridge{ filePath, std::ios::binary };
 	if (!fileCartridge) // '!' overrides 'fail() -> bool'
 	{
-		throw std::exception("File not found.");
+		throw std::runtime_error("File not found.");
 	}
 
 	std::vector<uint8_t> fileData;

@@ -1,4 +1,3 @@
-#pragma once
 enum class Registers {
     V0 = 0x00,
     V1 = 0x01,
