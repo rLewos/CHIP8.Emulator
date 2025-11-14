@@ -1,11 +1,11 @@
-#define SDL_MAIN_HANDLED // force SDL2 to no try to find 'WinMain'
+#define SDL_MAIN_HANDLED // force SDL2 to no try to find 'WinMain'. The SDL2 Standard entrypoint.
 #include <iostream>
 //#include <fmt/format.h>
 #include <SDL.h>
 
 #include "../CHIP8.Core/CPU.h"
 #include "../CHIP8.Core/KeyEnum.h"
-#include "Window.h"
+//#include "Window.h"
 
 int main(int argc, char *argv[]) {
 
@@ -23,8 +23,7 @@ int main(int argc, char *argv[]) {
       if (window == nullptr)
         throw std::runtime_error("Can't create window");
 
-      renderer = SDL_CreateRenderer(
-          window, 0, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+      renderer = SDL_CreateRenderer(window, 0, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
       if (renderer == nullptr)
         throw std::runtime_error("Can't create renderer");
 
@@ -37,8 +36,7 @@ int main(int argc, char *argv[]) {
       int pitch = 0;
 
       SDL_LockTexture(screen, nullptr, &pixels, &pitch);
-      memcpy(pixels, surfaceScreen->pixels,
-                  surfaceScreen->w * surfaceScreen->h);
+      memcpy(pixels, surfaceScreen->pixels,surfaceScreen->w * surfaceScreen->h);
       SDL_UnlockTexture(screen);
 
       int32_t numeroPixels = (surfaceScreen->pitch / 4) * 64;
@@ -47,7 +45,7 @@ int main(int argc, char *argv[]) {
       CPU cpu;
 
       std::vector<std::string> suitTestRomNameList{"1-chip8-logo", "2-ibm-logo", "3-corax+", "4-flags", "5-quirks", "6-keypad", "7-beep","8-scrolling"};
-      cpu.loadCartridge("E:\\Roms\\Chip8\\SuitTest\\" + suitTestRomNameList.at(3) + ".ch8");
+      cpu.loadCartridge("E:\\Roms\\Chip8\\SuitTest\\" + suitTestRomNameList.at(5) + ".ch8");
 
       while (!quit) {
         while (SDL_PollEvent(&e)) {
@@ -120,6 +118,10 @@ int main(int argc, char *argv[]) {
 
             case SDLK_4:
               cpu.setKeyPressed(Keys::KC);
+              break;
+
+            case SDLK_ESCAPE:
+              quit = true;
               break;
 
             default:

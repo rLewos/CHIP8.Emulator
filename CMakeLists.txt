@@ -26,7 +26,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(SDL2)
 
-# Set Default Main executable.
+# Set Default Main executable. References to all single files.
 add_executable(CHIP8.Emulator 
     src/CHIP8.UI.SDL/Main.cpp
     src/CHIP8.Core/CPU.cpp
